@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Wishlist</title>
+  <link rel="stylesheet" href="css/style2.css" />
+  <style>
+    .wishlist-item {
+      display: flex;
+      gap: 15px;
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+    }
+    .wishlist-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">Your Wishlist</h1>
+  <div id="wishlist-container" style="max-width:800px;margin:auto;"></div>
+
+  <script>
+    const container = document.getElementById("wishlist-container");
+    const wishlist = JSON.parse(localStorage.getItem("wishlistItems")) || [];
+
+    if (wishlist.length === 0) {
+      container.innerHTML = "<p>No items in wishlist.</p>";
+    } else {
+      wishlist.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "wishlist-item";
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div>
+            <h3>${item.name}</h3>
+            <p>${item.price}</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

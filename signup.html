@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .signup-card {
+      background: #fff;
+      padding: 40px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .signup-card h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .signup-card input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .signup-card button {
+      background-color: #a83ad1;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .signup-card button:hover {
+      background-color: #922bbd;
+    }
+
+    .signup-card .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .signup-card .login-link a {
+      color: #a83ad1;
+      text-decoration: none;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      display: none;
+      text-align: left;
+      margin: -5px 0 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-card">
+    <h2>Create a New Account</h2>
+    <form id="signupForm" action="signup_process.php" method="POST">
+      <input type="text" name="fullname" placeholder="Full Name" required>
+
+      <input type="email" name="email" id="email" placeholder="Email Address" required>
+      <div id="emailError" class="error">Invalid email format</div>
+
+      <input type="password" name="password" id="password" placeholder="Password" required>
+      <div id="passwordError" class="error">Password must be at least 8 characters</div>
+
+      <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" required>
+      <div id="confirmError" class="error">Passwords do not match</div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="login_form.html">Log in</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    const emailError = document.getElementById('emailError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmError = document.getElementById('confirmError');
+
+    form.addEventListener('submit', function (e) {
+      let valid = true;
+
+      // Email validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(emailInput.value.trim())) {
+        emailError.style.display = 'block';
+        valid = false;
+      } else {
+        emailError.style.display = 'none';
+      }
+
+      // Password length validation
+      if (passwordInput.value.length < 8) {
+        passwordError.style.display = 'block';
+        valid = false;
+      } else {
+        passwordError.style.display = 'none';
+      }
+
+      // Confirm password match
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        confirmError.style.display = 'block';
+        valid = false;
+      } else {
+        confirmError.style.display = 'none';
+      }
+
+      // Prevent form submission if validation fails
+      if (!valid) {
+        e.preventDefault();
+      }
+    });
+  </script>
+
+</body>
+</html>

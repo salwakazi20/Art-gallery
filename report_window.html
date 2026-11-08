@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Options</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    .report-container {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .report-buttons button {
+      padding: 12px 30px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      background-color: #9c2bb3;
+      transition: background-color 0.3s;
+    }
+
+    .report-buttons button:hover {
+      background-color: #9c2bb3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="report-container">
+    <h2>Select Report Type</h2>
+    <div class="report-buttons">
+        <button onclick="location.href='customer_report.php'">Customer</button>
+      <button onclick="location.href='artist_report.php'">Artist</button>
+
+    </div>
+  </div>
+
+</body>
+</html>

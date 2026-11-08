@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reg form</title>
+    <link rel="stylesheet" href="style1.css">
+    <style>
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+            margin: -5px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="regForm" action="register.php" method="post">
+            <h1>Registration form</h1>
+            <hr><br><br>
+
+            <label>Full name:</label>
+            <input type="text" required name="fname" placeholder="Enter your name"><br><br>
+
+            <label>Email:</label>
+            <input type="email" name="email" id="email" required placeholder="Enter email"><br>
+            <div id="emailError" class="error">Invalid email format</div><br>
+
+            <label>Password:</label>
+            <input type="password" required name="password" id="password" placeholder="Enter password"><br>
+            <div id="passwordError" class="error">Password must be at least 8 characters</div><br>
+
+            <label>Confirm password:</label>
+            <input type="password" required name="cnrf" id="confirmPassword" placeholder="Confirm your password"><br>
+            <div id="confirmError" class="error">Passwords do not match</div><br>
+
+            <fieldset>
+                <legend>Gender:</legend>
+                <p>
+                    Male <input type="radio" name="gender" id="male">
+                    Female <input type="radio" name="gender" id="female">
+                </p>
+            </fieldset><br>
+
+            <label>Mob:</label>
+            <input type="text" required name="mob" id="mob" placeholder="Enter mob number"><br>
+            <div id="mobError" class="error">Invalid contact number (must be 10 digits)</div><br>
+
+            <label>Address:</label>
+            <textarea name="address" required rows="8" cols="100" id="address" placeholder="Enter your address"></textarea><br><br>
+
+            <input type="submit" value="Register now">
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('regForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const mobInput = document.getElementById('mob');
+
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmError = document.getElementById('confirmError');
+        const mobError = document.getElementById('mobError');
+
+        form.addEventListener('submit', function (e) {
+            let valid = true;
+
+            // Email format validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value.trim())) {
+                emailError.style.display = 'block';
+                valid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            // Password length validation
+            if (passwordInput.value.length < 8) {
+                passwordError.style.display = 'block';
+                valid = false;
+            } else {
+                passwordError.style.display = 'none';
+            }
+
+            // Confirm password match
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmError.style.display = 'block';
+                valid = false;
+            } else {
+                confirmError.style.display = 'none';
+            }
+
+            // Mobile number validation (10 digits only)
+            const mobPattern = /^\d{10}$/;
+            if (!mobPattern.test(mobInput.value.trim())) {
+                mobError.style.display = 'block';
+                valid = false;
+            } else {
+                mobError.style.display = 'none';
+            }
+
+            if (!valid) {
+                e.preventDefault(); // Stop form submission
+            }
+        });
+    </script>
+</body>
+</html>

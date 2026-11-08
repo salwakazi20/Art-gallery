@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="admin-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">Dashboard</div>
+    <ul>
+      <li id="dashboardTab" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+      <li id="productsTab" onclick="showSection('products')"><i class="fas fa-palette"></i> Products</li>
+      <li id="usersTab" onclick="showSection('users')"><i class="fas fa-user"></i> Users</li>
+      <li id="reportsTab">
+        <a href="report_window.html" style="text-decoration: none; color: inherit;">
+          <i class="fas fa-file-alt"></i> Reports
+        </a>
+      </li>
+      <li id="feedbackTab" onclick="showSection('feedback')"><i class="fas fa-comments"></i> Feedback</li>
+      <li id="settingsTab" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</li>
+    </ul>
+  </div>
+
+
+  <div class="main-content">
+    <!-- Feedback Section -->
+    <div id="feedback" class="section" style="display: none;">
+      <h2>Feedback</h2>
+      <div id="feedbackContainer">
+        <!-- Feedback entries will appear here -->
+      </div>
+    </div>
+
+    <!-- Placeholder sections -->
+    <div id="dashboard" class="section" style="display: none;"><h2>Dashboard</h2></div>
+    <div id="products" class="section" style="display: none;"><h2>Products</h2></div>
+    <div id="users" class="section" style="display: none;"><h2>Users</h2></div>
+    <div id="reports" class="section" style="display: none;"><h2>Reports</h2></div>
+    <div id="settings" class="section" style="display: none;"><h2>Settings</h2></div>
+  </div>
+
+  <script>
+    function showSection(sectionId) {
+      // Hide all sections
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(sec => sec.style.display = 'none');
+
+      // Show selected section
+      const section = document.getElementById(sectionId);
+      if (section) section.style.display = 'block';
+
+      // Remove active class from all tabs
+      document.querySelectorAll('.sidebar ul li').forEach(li => li.classList.remove('active'));
+
+      // Highlight selected tab
+      const activeTab = document.getElementById(sectionId + 'Tab');
+      if (activeTab) activeTab.classList.add('active');
+
+      // If it's feedback section, load data
+      if (sectionId === 'feedback') {
+        loadFeedback();
+      }
+    }
+
+    function loadFeedback() {
+      fetch('php/feedback.json')
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById('feedbackContainer');
+          container.innerHTML = ''; // Clear existing feedback
+
+          if (data.length === 0) {
+            container.innerHTML = '<p>No feedback available.</p>';
+            return;
+          }
+
+          data.forEach(entry => {
+            const div = document.createElement('div');
+            div.classList.add('feedbackItem');
+            div.innerHTML = `<strong>${entry.name}</strong> (${entry.email})<br><p>${entry.message}</p><hr>`;
+            container.appendChild(div);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading feedback:', error);
+          document.getElementById('feedbackContainer').innerHTML = '<p>Error loading feedback.</p>';
+        });
+    }
+  </script>
+
+
+ <div class="main">
+    <div class="top-bar">
+      <h1>Admin</h1>
+      <div class="user"><i class="fas fa-user"></i></div>
+    </div>
+    
+    <!-- Section: Dashboard -->
+    <div id="dashboardContent" class="tab-content">
+      <h2>Dashboard Overview</h2>
+      <!-- Your dashboard content here -->
+    </div>
+
+    <!-- Section: Products -->
+    <div id="productsContent" class="tab-content" style="display:none;">
+      <h2>Products Overview</h2>
+      <!-- Your products content here -->
+    </div>
+
+    <!-- Section: Users -->
+    <div id="usersContent" class="tab-content" style="display:none;">
+      <h2>Users List</h2>
+      <!-- Your users content here -->
+    </div>
+
+    <!-- Section: Reports -->
+    <div id="reportsContent" class="tab-content" style="display:none;">
+      <h2>Reports Section</h2>
+      <!-- Your reports content here -->
+    </div>
+
+    <!-- Dashboard Overview Cards 
+    <div class="cards">
+      <div class="card">
+        <h3>Total Products</h3>
+        <p>45</p>
+      </div>
+      <div class="card">
+        <h3>New Orders</h3>
+        <p>12</p>
+      </div>
+      <div class="card">
+        <h3>Registered Users</h3>
+        <p>87</p>
+      </div>
+      <div class="card">
+        <h3>Feedbacks</h3>
+        <p>23</p>
+      </div>
+    </div>-->
+
+    <!-- Bottom Section for Tables -->
+    <div class="bottom-section">
+      <div class="table-section">
+        <h3>Recent Products</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Artwork</th>
+              <th>Price</th>
+              <th>Orders</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Canvas Painting</td>
+              <td>Rs.2,760</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <td>Mini Canvas</td>
+              <td>Rs.1,899</td>
+              <td>7</td>
+            </tr>
+            <tr>
+              <td>Oil Painting</td>
+              <td>Rs.4,599</td>
+              <td>12</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- New Orders Table -->
+      <div class="table-section">
+        <h3>Orders</h3>
+        <table id="ordersTable">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Product Name</th>
+              <th>Original Price</th>
+              <th>Discounted Price</th>
+              <th>Payment Method</th>
+              <th>Order Date</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <!-- Orders will be populated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent Users List -->
+      <div class="table-section">
+        <h3>Recent Users</h3>
+        <ul class="user-list">
+          <li>Janhvi Malhotra</li>
+          <li>Siddhi Sharma</li>
+          <li>Aman Desai</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
+  <script>
+    // Populate Orders Table from localStorage (or modify this logic as needed)
+    window.onload = function () {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+      const ordersTableBody = document.getElementById('ordersTableBody');
+      
+      if (orders.length === 0) {
+        ordersTableBody.innerHTML = '<tr><td colspan="6">No orders available</td></tr>';
+      } else {
+        orders.forEach(order => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${order.orderId}</td>
+            <td>${order.productName}</td>
+            <td>${order.originalPrice}</td>
+            <td>${order.discountedPrice}</td>
+            <td>${order.paymentMethod}</td>
+            <td>${order.orderDate}</td>
+          `;
+          ordersTableBody.appendChild(row);
+        });
+      }
+    };
+  </script>
+</body>
+</html>

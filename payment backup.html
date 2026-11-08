@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <link rel="stylesheet" href="css/payment_css.css">
+</head>
+<body>
+    <div class="container">
+        <h2>PAYMENT METHOD</h2>
+        <div class="progress-bar">
+            <span class="step completed">Select payment method</span>
+        </div>
+
+        <form action="php/process_payment.php" id="paymentform" method="POST">
+            <div class="payment-option">
+                <input type="radio" name="payment" id="cod" value="cod">
+                <label for="cod">
+                    <span class="amount">₹187</span>
+                    Cash on Delivery
+                </label>
+            </div>
+
+            <div class="payment-option selected">
+                <input type="radio" name="payment" id="online" value="online" checked>
+                <label for="online">
+                    <span class="discount">₹175 <small>Save ₹12</small></span>
+                    Pay Online
+                </label>
+                <p class="offer">Extra discount with bank offers <a href="#">View Offers</a></p>
+            </div>
+
+            <h4>Last Used</h4>
+            <div class="payment-option">
+                <input type="radio" name="payment" id="gpay" value="gpay">
+                <label for="gpay">
+                    <img src="images/gpay.png" height="50" width="50"> Google Pay
+                </label>
+            </div>
+
+            <div class="expandable">
+                <details>
+                    <summary>Pay by any UPI App <span>Offers Available</span></summary>
+                </details>
+                <details>
+                    <summary>Wallet <span>Offers Available</span></summary>
+                </details>
+                <details>
+                    <summary>Debit/Credit Cards <span>Offers Available</span></summary>
+                </details>
+                <details>
+                    <summary>Net Banking</summary>
+                </details>
+            </div>
+
+            <!-- Price Details Section -->
+            <div class="price-details">
+                <h3>Price Details (1 Item)</h3>
+                <div class="price-row">
+                    <span>Total Product Price</span>
+                    <span>₹187</span>
+                </div>
+                <div class="price-row discount">
+                    <span>Total Discounts</span>
+                    <span>- ₹12</span>
+                </div>
+                <hr>
+                <div class="price-row total">
+                    <span>Order Total</span>
+                    <span>₹175</span>
+                </div>
+                <div class="discount-message">
+                    <p>🎉 Yay! Your total discount is ₹12</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="total">₹175</span>
+                <input type="hidden" name="total_price" value="187">
+                <input type="hidden" name="total_discount" value="12">
+                <input type="hidden" name="order_total" value="175">
+                <button type="submit">Place Order</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ✅ Script placed right before closing </body> tag -->
+    <script>
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productName = urlParams.get('name');
+      const productPrice = parseFloat(urlParams.get('price'));
+
+      if (productName && productPrice) {
+        const discount = 12;
+        const orderTotal = productPrice - discount;
+
+        // Update Price Details Section
+        const priceRows = document.querySelectorAll('.price-details .price-row span:last-child');
+        if (priceRows.length >= 3) {
+          priceRows[0].innerText = `₹${productPrice}`;
+          priceRows[1].innerText = `- ₹${discount}`;
+          priceRows[2].innerText = `₹${orderTotal}`;
+        }
+
+        // Update hidden fields
+        document.querySelector('input[name="total_price"]').value = productPrice;
+        document.querySelector('input[name="total_discount"]').value = discount;
+        document.querySelector('input[name="order_total"]').value = orderTotal;
+
+        // Update footer total
+        document.querySelector('.footer .total').innerText = `₹${orderTotal}`;
+
+        // ✅ Update "Select Payment Method" section
+        const codAmount = document.querySelector('.payment-option label[for="cod"] .amount');
+        const onlineAmount = document.querySelector('.payment-option.selected label[for="online"] .discount');
+
+        if (codAmount) codAmount.innerText = `₹${productPrice}`;
+        if (onlineAmount) onlineAmount.innerHTML = `₹${orderTotal} <small>Save ₹${discount}</small>`;
+      }
+    };
+    </script>
+    <script>
+        document.getElementById("paymentForm").addEventListener("submit", function (e) {
+          e.preventDefault(); // Stop default form submission
+        
+          const urlParams = new URLSearchParams(window.location.search);
+          const name = urlParams.get('name');
+          const price = parseFloat(urlParams.get('price'));
+          const total = parseFloat(document.querySelector('input[name="order_total"]').value);
+          const method = document.querySelector('input[name="payment"]:checked')?.value || 'unknown';
+        
+          if (name && !isNaN(price)) {
+            const order = {
+              name,
+              originalPrice: price,
+              discountedPrice: total,
+              paymentMethod: method,
+              date: new Date().toLocaleString()
+            };
+        
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+        
+            alert('Order placed successfully!');
+            // Optional: redirect to dashboard or orders page
+            // window.location.href = 'dashboard.html';
+          } else {
+            alert('Product details missing.');
+          }
+        });
+        </script>
+       
+</body>
+</html>

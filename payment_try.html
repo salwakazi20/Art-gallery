@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method</title>
+    <link rel="stylesheet" href="payment_css.css">
+</head>
+<body>
+    <div class="container">
+        <h2>PAYMENT METHOD</h2>
+        <div class="progress-bar">
+            <span class="step completed">Select payment method</span>
+        </div>
+
+        <form action="process_payment.php" method="POST">
+        
+            <!-- Payment options (unchanged) -->
+            <div class="payment-option">
+                <input type="radio" name="payment" id="cod" value="cod">
+                <label for="cod">
+                    <span class="amount">₹187</span>
+                    Cash on Delivery
+                </label>
+            </div>
+            <div class="payment-option selected">
+                <input type="radio" name="payment" id="online" value="online" checked>
+                <label for="online">
+                    <span class="discount">₹175 <small>Save ₹12</small></span>
+                    Pay Online
+                </label>
+                <p class="offer">Extra discount with bank offers <a href="#">View Offers</a></p>
+            </div>
+
+            <!-- Price Details Section -->
+            <div class="price-details">
+                <h3>Price Details (1 Item)</h3>
+                <div class="price-row">
+                    <span>Total Product Price</span>
+                    <span>₹187</span>
+                </div>
+                <div class="price-row discount">
+                    <span>Total Discounts</span>
+                    <span>- ₹12</span>
+                </div>
+                <hr>
+                <div class="price-row total">
+                    <span>Order Total</span>
+                    <span>₹175</span>
+                </div>
+                <div class="discount-message">
+                    <p>🎉 Yay! Your total discount is ₹12</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <span class="total">₹175</span>
+                <input type="hidden" name="total_price" value="187">
+                <input type="hidden" name="total_discount" value="12">
+                <input type="hidden" name="order_total" value="175">
+                <input type="hidden" name="product_name" value="">
+                <button type="submit">Place Order</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        window.onload = function () {
+          const urlParams = new URLSearchParams(window.location.search);
+          const productName = urlParams.get('name');
+          const productPrice = parseFloat(urlParams.get('price'));
+        
+          if (productName && productPrice) {
+            const discount = 12;
+            const orderTotal = productPrice - discount;
+        
+            // Update Price Details Section
+            const priceRows = document.querySelectorAll('.price-details .price-row span:last-child');
+            if (priceRows.length >= 3) {
+              priceRows[0].innerText = `₹${productPrice}`;
+              priceRows[1].innerText = `- ₹${discount}`;
+              priceRows[2].innerText = `₹${orderTotal}`;
+            }
+        
+            // Update hidden fields
+            document.querySelector('input[name="total_price"]').value = productPrice;
+            document.querySelector('input[name="total_discount"]').value = discount;
+            document.querySelector('input[name="order_total"]').value = orderTotal;
+            document.querySelector('input[name="product_name"]').value = productName;
+
+        
+            // Update footer total
+            document.querySelector('.footer .total').innerText = `₹${orderTotal}`;
+        
+            // Update payment option amounts
+            const codAmount = document.querySelector('.payment-option label[for="cod"] .amount');
+            const onlineAmount = document.querySelector('.payment-option.selected label[for="online"] .discount');
+        
+            if (codAmount) codAmount.innerText = `₹${productPrice}`;
+            if (onlineAmount) onlineAmount.innerHTML = `₹${orderTotal} <small>Save ₹${discount}</small>`;
+        
+            // 🟢 Handle form submission and store order
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (e) {
+              e.preventDefault(); // Stop form for a moment to save data
+        
+              const selectedPayment = document.querySelector('input[name="payment"]:checked');
+              const selectedPaymentMethod = selectedPayment ? selectedPayment.value : 'unknown';
+        
+              const orders = JSON.parse(localStorage.getItem("orders")) || [];
+        
+              orders.push({
+                orderId: Date.now(),
+                productName: productName,
+                originalPrice: `₹${productPrice}`,
+                discountedPrice: `₹${orderTotal}`,
+                paymentMethod: selectedPaymentMethod,
+                orderDate: new Date().toLocaleDateString('en-GB') // Format: dd/mm/yyyy
+              });
+        
+              localStorage.setItem("orders", JSON.stringify(orders));
+        
+              form.submit(); // Now actually submit the form
+            });
+          }
+        };
+        </script>
+        
+</body>
+</html>

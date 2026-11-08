@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Artist registration form</title>
+    <link rel="stylesheet" href="style1.css">
+    <style>
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+            margin: -5px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="artistRegForm" action="ar_register.php" method="post" enctype="multipart/form-data">
+            <h2 class="main_heading">Artist registration form</h2>
+            <hr><br><br>
+
+            <label for="title">Full name:</label>
+            <input type="text" name="fname" id="title" placeholder="Enter your name" required><br><br>
+
+            <label for="name">Email:</label>
+            <input type="email" name="email" id="email" placeholder="Enter email" required><br>
+            <div id="emailError" class="error">Invalid email format</div><br>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Enter password" required><br>
+            <div id="passwordError" class="error">Password must be at least 8 characters</div><br>
+
+            <label for="cnfrm">Confirm password:</label>
+            <input type="password" name="cnfrm" id="cnfrm" placeholder="Confirm your password" required><br>
+            <div id="confirmError" class="error">Passwords do not match</div><br>
+
+            <fieldset>
+                <legend>Gender:</legend>
+                <p>
+                    Male<input type="radio" name="gender" id="male" value="m">
+                    Female<input type="radio" name="gender" value="f" id="female">
+                </p>
+            </fieldset><br>
+
+            <label for="mob">Mob no:</label>
+            <input type="text" name="mob" id="mob" placeholder="Enter mob number"><br>
+            <div id="mobError" class="error">Invalid contact number (must be 10 digits)</div><br>
+
+            <label for="bio">Biography:</label>
+            <textarea name="bio" rows="8" cols="100" id="bio" placeholder="Enter your biography (optional)"></textarea><br><br>
+
+            <label for="pic">Profile picture:</label>
+            <input type="file" name="pic" id="pic" required><br><br>
+
+            <input type="submit" value="Register now">
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('artistRegForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('cnfrm');
+        const mobInput = document.getElementById('mob');
+
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmError = document.getElementById('confirmError');
+        const mobError = document.getElementById('mobError');
+
+        form.addEventListener('submit', function (e) {
+            let valid = true;
+
+            // Email format validation
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value.trim())) {
+                emailError.style.display = 'block';
+                valid = false;
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            // Password length validation
+            if (passwordInput.value.length < 8) {
+                passwordError.style.display = 'block';
+                valid = false;
+            } else {
+                passwordError.style.display = 'none';
+            }
+
+            // Confirm password match
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmError.style.display = 'block';
+                valid = false;
+            } else {
+                confirmError.style.display = 'none';
+            }
+
+            // Mobile number validation (10 digits only)
+            const mobPattern = /^\d{10}$/;
+            if (!mobPattern.test(mobInput.value.trim())) {
+                mobError.style.display = 'block';
+                valid = false;
+            } else {
+                mobError.style.display = 'none';
+            }
+
+            if (!valid) {
+                e.preventDefault(); // Stop form submission
+            }
+        });
+    </script>
+</body>
+</html>

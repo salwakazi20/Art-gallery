@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <style>
+    #cart {
+      padding: 20px;
+    }
+
+    .cart-container {
+      width: 80%;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-details h4 {
+      font-size: 16px;
+    }
+
+    .item-details .price {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .item-details .item-quantity {
+      width: 60px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #cart-total {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    #checkout {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #checkout:hover {
+      background-color: #c149f0;
+    }
+  </style>
+</head>
+<body>
+
+<section id="cart">
+  <div class="cart-container">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div id="cart-total">
+      <span>Total Price: </span><span id="total-price">0</span>
+    </div>
+    <button id="checkout">Proceed to Checkout</button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cartKey = "cartItems";
+    const cartItemsContainer = document.getElementById("cart-items");
+    const totalPriceElement = document.getElementById("total-price");
+    const checkoutButton = document.getElementById("checkout");
+
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    // Function to render the cart items
+    function renderCartItems() {
+      cartItemsContainer.innerHTML = ''; // Clear existing items
+
+      // Check if the cart is empty
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty!</p>";
+        totalPriceElement.innerText = "0";
+        return;
+      }
+
+      let totalPrice = 0;
+
+      cart.forEach((item, index) => {
+        const cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+
+        cartItem.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="item-details">
+            <h4>${item.name}</h4>
+            <p class="price">${item.price}</p>
+            <label>Quantity:</label>
+            <input type="number" value="1" min="1" data-index="${index}" class="item-quantity">
+            <button data-index="${index}" class="remove-item">Remove</button>
+          </div>
+        `;
+
+        cartItemsContainer.appendChild(cartItem);
+
+        // Calculate total price (price * quantity)
+        totalPrice += parseFloat(item.price.replace("₹", "")); // assuming price is in ₹ for simplicity
+      });
+
+      totalPriceElement.innerText = "₹" + totalPrice.toFixed(2);
+    }
+
+    // Handle quantity change
+    cartItemsContainer.addEventListener("input", function (e) {
+      if (e.target.classList.contains("item-quantity")) {
+        const index = e.target.dataset.index;
+        const quantity = e.target.value;
+
+        // Update cart based on quantity change
+        if (quantity >= 1) {
+          const updatedItem = cart[index];
+          updatedItem.quantity = quantity;
+          localStorage.setItem(cartKey, JSON.stringify(cart));
+          renderCartItems();
+        }
+      }
+    });
+
+    // Handle item removal
+    cartItemsContainer.addEventListener("click", function (e) {
+      if (e.target.classList.contains("remove-item")) {
+        const index = e.target.dataset.index;
+        cart.splice(index, 1); // Remove item from the array
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        renderCartItems(); // Re-render the cart
+      }
+    });
+
+    // Proceed to checkout (this can be customized as needed)
+    checkoutButton.addEventListener("click", function () {
+      if (cart.length > 0) {
+        alert("Proceeding to checkout...");
+        // You can redirect the user to a checkout page or open a payment interface here.
+      } else {
+        alert("Your cart is empty.");
+      }
+    });
+
+    // Initial rendering of cart items
+    renderCartItems();
+  });
+</script>
+
+</body>
+</html>
